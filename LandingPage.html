@@ -3,199 +3,164 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>HTML 5 Boilerplate</title>
+    <title>Document</title>
     <style>
-        body {
+        @import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital@1&display=swap');
+
+        * {
+            padding: 0;
             margin: 0;
-            background: #020202;
-            cursor: crosshair;
+            font-family: 'Bodoni Moda', serif;
         }
 
-        canvas {
-            display: block
+        body {
+            height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(bday.gif);
+            background-position: left;
+            background-repeat: no-repeat;
+            background-size: cover;
         }
 
-        h1 {
+        .container {
+            perspective: 1000px;
+        }
+
+        .card {
+            width: 280px;
+            height: 360px;
+            margin-left: 30px;
+            position: left;
+            top: 100px;
+            left: 230px;
+            transition: 2s;
+            transform-style: preserve-3d;
+        }
+
+        .card:hover {
+            transform: rotateY(180deg);
+        }
+
+        .block {
             position: absolute;
-            top: 20%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #fff;
-            font-family: "Source Sans Pro";
-            font-size: 5em;
-            font-weight: 900;
-            -webkit-user-select: none;
-            user-select: none;
+            top: 200px;
+            right: 600px;
+            perspective: 800px;
+        }
+
+        .outside,
+        .inside {
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .outside {
+            background-color: blanchedalmond;
+            box-shadow: inset 0 5px 10px rgba(0, 0, 0, 0.5);
+            position: absolute;
+            backface-visibility: hidden;
+        }
+
+        .outside h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            color: salmon;
+            margin-bottom: 30px;
+        }
+
+        .inside {
+            background-color: rgb(255, 244, 79);
+            box-shadow: inset 0 5px 10px rgba(0, 0, 0, 0.5);
+            transform: rotateY(180deg);
+        }
+
+        .inside h3 {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .frames {
+            width: 400px;
+            height: 150px;
+            box-shadow: 0 5px 10px rgba(255, 255, 255, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 0 0.8rem;
+
+            transform: rotateY(-230deg) rotateX(20deg);
+            position: absolute;
+        }
+
+        .frames img {
+            width: 125px;
+            height: 125px;
+            border-radius: 50%;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .frames p {
+            font-size: 20px;
+            font-weight: bold;
+            transform: rotateY(180deg);
+        }
+
+        .frames:nth-child(1) {
+            top: -110px;
+            z-index: -1;
+            background-color: coral;
+        }
+
+        .frames:nth-child(2) {
+            background-color: goldenrod;
+        }
+
+        .frames:nth-child(3) {
+            top: 100px;
+            background-color: burlywood;
         }
     </style>
 </head>
 
 <body>
-    <h1>Happy Birthday</h1>
-    <canvas id="birthday"></canvas>
-    <script>
+    <h1 align="center" color="white">Happy Birthday dear SUMIT</h1>
+    <div class="container">
+        <div class="card">
+            <div class="outside">
+                <img src="bday.gif" />
 
-        // helper functions
-        const PI2 = Math.PI * 2
-        const random = (min, max) => Math.random() * (max - min + 1) + min | 0
-        const timestamp = _ => new Date().getTime()
+                <h3>My dear friend,may god bless you with abundant joy on your birthday and always!<br>
+                    Thank you for always being by my side and having my back.</h3>
+            </div>
+            <div class="inside">
+                <img src="cakegif.gif" />
+                <h3>Sending you an infinite amount of love, joy, and happiness on your birthday!
+                </h3>
+            </div>
+        </div>
 
-        // container
-        class Birthday {
-            constructor() {
-                this.resize()
+        <div class="block">
+            <div class="frames frame1">
+                <img src="img1.jpeg" alt="">
+                <p>Keep smiling,Keep shining</p>
+            </div>
+            <div class="frames frame2">
+                <img src="img2.jpeg" alt="">
+                <p>On this occasion bring you lot of happiness and success
+                </p>
+            </div>
+            <div class="frames frame3">
+                <img src="img3.jpeg" alt="">
+                <p>May God bless you on your birthday, and always</p>
+            </div>
+        </div>
 
-                // create a lovely place to store the firework
-                this.fireworks = []
-                this.counter = 0
-
-            }
-
-            resize() {
-                this.width = canvas.width = window.innerWidth
-                let center = this.width / 2 | 0
-                this.spawnA = center - center / 4 | 0
-                this.spawnB = center + center / 4 | 0
-
-                this.height = canvas.height = window.innerHeight
-                this.spawnC = this.height * .1
-                this.spawnD = this.height * .5
-
-            }
-
-            onClick(evt) {
-                let x = evt.clientX || evt.touches && evt.touches[0].pageX
-                let y = evt.clientY || evt.touches && evt.touches[0].pageY
-
-                let count = random(3, 5)
-                for (let i = 0; i < count; i++) this.fireworks.push(new Firework(
-                    random(this.spawnA, this.spawnB),
-                    this.height,
-                    x,
-                    y,
-                    random(0, 260),
-                    random(30, 110)))
-
-                this.counter = -1
-
-            }
-
-            update(delta) {
-                ctx.globalCompositeOperation = 'hard-light'
-                ctx.fillStyle = `rgba(20,20,20,${7 * delta})`
-                ctx.fillRect(0, 0, this.width, this.height)
-
-                ctx.globalCompositeOperation = 'lighter'
-                for (let firework of this.fireworks) firework.update(delta)
-
-                // if enough time passed... create new new firework
-                this.counter += delta * 3 // each second
-                if (this.counter >= 1) {
-                    this.fireworks.push(new Firework(
-                        random(this.spawnA, this.spawnB),
-                        this.height,
-                        random(0, this.width),
-                        random(this.spawnC, this.spawnD),
-                        random(0, 360),
-                        random(30, 110)))
-                    this.counter = 0
-                }
-
-                // remove the dead fireworks
-                if (this.fireworks.length > 1000) this.fireworks = this.fireworks.filter(firework => !firework.dead)
-
-            }
-        }
-
-        class Firework {
-            constructor(x, y, targetX, targetY, shade, offsprings) {
-                this.dead = false
-                this.offsprings = offsprings
-
-                this.x = x
-                this.y = y
-                this.targetX = targetX
-                this.targetY = targetY
-
-                this.shade = shade
-                this.history = []
-            }
-            update(delta) {
-                if (this.dead) return
-
-                let xDiff = this.targetX - this.x
-                let yDiff = this.targetY - this.y
-                if (Math.abs(xDiff) > 3 || Math.abs(yDiff) > 3) { // is still moving
-                    this.x += xDiff * 2 * delta
-                    this.y += yDiff * 2 * delta
-
-                    this.history.push({
-                        x: this.x,
-                        y: this.y
-                    })
-
-                    if (this.history.length > 20) this.history.shift()
-
-                } else {
-                    if (this.offsprings && !this.madeChilds) {
-
-                        let babies = this.offsprings / 2
-                        for (let i = 0; i < babies; i++) {
-                            let targetX = this.x + this.offsprings * Math.cos(PI2 * i / babies) | 0
-                            let targetY = this.y + this.offsprings * Math.sin(PI2 * i / babies) | 0
-
-                            birthday.fireworks.push(new Firework(this.x, this.y, targetX, targetY, this.shade, 0))
-
-                        }
-
-                    }
-                    this.madeChilds = true
-                    this.history.shift()
-                }
-
-                if (this.history.length === 0) this.dead = true
-                else if (this.offsprings) {
-                    for (let i = 0; this.history.length > i; i++) {
-                        let point = this.history[i]
-                        ctx.beginPath()
-                        ctx.fillStyle = 'hsl(' + this.shade + ',100%,' + i + '%)'
-                        ctx.arc(point.x, point.y, 1, 0, PI2, false)
-                        ctx.fill()
-                    }
-                } else {
-                    ctx.beginPath()
-                    ctx.fillStyle = 'hsl(' + this.shade + ',100%,50%)'
-                    ctx.arc(this.x, this.y, 1, 0, PI2, false)
-                    ctx.fill()
-                }
-
-            }
-        }
-
-        let canvas = document.getElementById('birthday')
-        let ctx = canvas.getContext('2d')
-
-        let then = timestamp()
-
-        let birthday = new Birthday
-        window.onresize = () => birthday.resize()
-        document.onclick = evt => birthday.onClick(evt)
-        document.ontouchstart = evt => birthday.onClick(evt)
-
-            ; (function loop() {
-                requestAnimationFrame(loop)
-
-                let now = timestamp()
-                let delta = now - then
-
-                then = now
-                birthday.update(delta / 1000)
-
-
-            })()
-    </script>
+    </div>
 </body>
 
 </html>
